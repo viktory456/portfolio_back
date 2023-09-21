@@ -86,7 +86,7 @@ Skills.init({
   modelName: 'Skills' 
 });
 
-console.log(Skills === sequelize.models.Skills);
+// console.log(Skills === sequelize.models.Skills);
 
 Skills.sync()
 
@@ -232,10 +232,43 @@ Skills.sync()
 // eagle.position = "designer"
 // eagle.save();
 
-app.get('/', async (req, res) => {
-  let skills =  await Skills.findAll()
+app.get('/api/skills', async (req, res) => {
+  let skills =  await Skills.findAll({
+    order: [
+      ['id', 'ASC']
+    ]
+  })
   res.send(skills)
 }) 
+
+// app.get('/api/skills/:id', async (req, res) => {
+//   let selectedSkill =  await Skills.findOne({ where: { id: `${req.params.id}` } });
+
+//   if (selectedSkill === null) {
+//     console.log('The skill is not found!')
+//   } else {
+//     res.send(selectedSkill)
+//   }
+// }) 
+
+app.post('/api/skills', async (req, res) => {
+  try {
+    let newSkill = await Skills.create({ name: req.body.name, category: req.body.category, level: req.body.level, id: req.body.id});
+  } catch (err) {
+    console.log("ERROR>>>>>>>>>>>>>>>>>", err)
+  }
+}) 
+
+app.delete('/api/skills', async (req, res) => {
+  await Skills.destroy({
+    where: {
+      id: req.body.id
+    }
+  });
+})
+
+
+
 
 
 
